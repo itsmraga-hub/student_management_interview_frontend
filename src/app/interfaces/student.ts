@@ -10,7 +10,7 @@ export interface Student {
 }
 
 
-// export interface PhotoPath {
-//   photoUrl: string;
-//   message: string;
-// }
+export interface PhotoPath {
+  photoUrl: string;
+  message: string;
+}
