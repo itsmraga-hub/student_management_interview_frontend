@@ -1,0 +1,115 @@
+<div class="p-4">
+  <!-- <h1 class="text-2xl font-bold mb-4 underline">Student Dashboard</h1> -->
+
+  <div class="flex space-x-6 mb-6">
+    <!-- Search by Student ID -->
+    <div class="flex flex-col w-1/4">
+      <label for="studentId" class="block font-semibold text-gray-700">Search by Student ID:</label>
+      <input
+        type="number"
+        id="studentId"
+        [(ngModel)]="searchStudentId"
+        class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+        placeholder="Enter Student ID"
+        (ngModelChange)="applyFilters()"
+      />
+    </div>
+  
+    <!-- Filter by Class -->
+    <div class="flex flex-col w-1/4">
+      <label for="studentClass" class="block font-semibold text-gray-700">Filter by Class:</label>
+      <select
+        id="studentClass"
+        [(ngModel)]="selectedClass"
+        class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+        (change)="applyFilters()"
+      >
+        <option value="">Select Class</option>
+        <option *ngFor="let class of classes" [value]="class">{{ class }}</option>
+      </select>
+    </div>
+  
+    <!-- Filter by Date of Birth -->
+    <div class="flex flex-col w-1/4">
+      <label for="dobRange" class="block font-semibold text-gray-700">Filter by DOB:</label>
+      <div class="flex space-x-2">
+        <input
+          type="date"
+          id="startDate"
+          [(ngModel)]="startDate"
+          class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+          (change)="applyFilters()"
+        />
+        <span class="self-center text-gray-700">-</span>
+        <input
+          type="date"
+          id="endDate"
+          [(ngModel)]="endDate"
+          class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+          (change)="applyFilters()"
+        />
+      </div>
+    </div>
+  </div>
+  
+  <div class="flex mb-4">
+    <label for="fileName" class="block font-semibold mr-2">Enter File Name:</label>
+    <input
+      type="text"
+      id="fileName"
+      [(ngModel)]="fileName"
+      class="px-4 py-2 border border-gray-300 rounded"
+      placeholder="Enter file name (optional)"
+    />
+  </div>
+
+  <!-- Export Button -->
+  <button
+    (click)="exportToExcel()"
+    class="bg-blue-500 text-white px-4 py-2 rounded mb-4"
+  >
+    Export to Excel
+  </button>
+  <table class="min-w-full border-collapse border border-gray-300">
+    <thead>
+      <tr class="bg-gray-200">
+        <th class="border border-gray-300 px-4 py-2">Id</th>
+        <th class="border border-gray-300 px-4 py-2">Photo</th>
+        <th class="border border-gray-300 px-4 py-2">First Name</th>
+        <th class="border border-gray-300 px-4 py-2">Last Name</th>
+        <th class="border border-gray-300 px-4 py-2">Class</th>
+        <th class="border border-gray-300 px-4 py-2">Score</th>
+        <th class="border border-gray-300 px-4 py-2">Status</th>
+        <th class="border border-gray-300 px-4 py-2">Date of Birth</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let student of paginatedStudents" class="hover:bg-gray-100">
+        <td class="border border-gray-300 px-4 py-2">{{ student.studentId }}</td>
+        <td>
+          <img *ngIf="student.photoPath; else placeholder" [src]="'http://127.0.0.1:8081\\' + student.photoPath" alt="student photo" />
+        <ng-template #placeholder>
+          <img src="https://via.placeholder.com/150" alt="student photo" />
+        </ng-template>
+
+        <td class="border border-gray-300 px-4 py-2">{{ student.firstName }}</td>
+        <td class="border border-gray-300 px-4 py-2">{{ student.lastName }}</td>
+        <td class="border border-gray-300 px-4 py-2">{{ student.studentClass }}</td>
+        <td class="border border-gray-300 px-4 py-2">{{ student.score }}</td>
+        <td class="border border-gray-300 px-4 py-2">{{ student.status }}</td>
+        <td class="border border-gray-300 px-4 py-2">{{ student.dob }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Pagination Controls -->
+  <div class="flex justify-between items-center mt-4">
+    <button (click)="prevPage()" [disabled]="currentPage === 1" class="bg-gray-500 text-white px-4 py-2 rounded">
+      Previous
+    </button>
+    <p>Page {{ currentPage }} of {{ totalPages }}</p>
+    <button (click)="nextPage()" [disabled]="currentPage === totalPages" class="bg-gray-500 text-white px-4 py-2 rounded">
+      Next
+    </button>
+  </div>
+</div>
