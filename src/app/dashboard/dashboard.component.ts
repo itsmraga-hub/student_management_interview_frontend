@@ -1,109 +1,147 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
-import { Student } from '../interfaces/student'; // Import the model
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MatDialog } from '@angular/material/dialog';
-import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { FormsModule } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, HttpClientModule, MatDialogModule,
-    MatButtonModule],
+  imports: [FormsModule, HttpClientModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent implements OnInit {
-  students: Student[] = []; // Array to store students
-  userString = localStorage.getItem('user');
-  user = this.userString ? JSON.parse(this.userString) : null;
-  headers = new HttpHeaders({
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${this.user.token}` // Pass the token in the Authorization header
-  });
+export class DashboardComponent {
+  studentId: number | null = null;
+  count: number | null = null;
 
-  constructor(private http: HttpClient, private router: Router, private dialog: MatDialog) {}
-
-  ngOnInit() {
-    this.loadStudents(); // Fetch students on component initialization
-  }
-
-
-
-  loadStudents() {
-    if (typeof window !== 'undefined' && window.localStorage) {
-    const userString = localStorage.getItem('user');
-    console.log('User string:', userString);
-    const user = userString ? JSON.parse(userString) : null;
-    console.log('User:', user);
-    console.log('User:', user.token);
-
-    const headers = new HttpHeaders({
+    userString = localStorage.getItem('user');
+    user = this.userString ? JSON.parse(this.userString) : null;
+    headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${user.token}` // Pass the token in the Authorization header
-    });
-    this.http.get<Student[]>('http://localhost:8080/students/sql', { headers }) // Your API endpoint here
-      .subscribe({
-        next: (response: Student[]) => {
-          console.log('Students fetched successfully', response);
-          this.students = response;
-        },
-        error: (err) => {
-          console.error('Error fetching students', err);
-        }
-      });
-  }
-}
-
-  deleteStudent(studentId: number) {
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '300px'
+      'Authorization': `Bearer ${this.user.token}` // Pass the token in the Authorization header
     });
 
-    // Call the API to delete the student
-    // this.http.delete(`http://localhost:8080/api/students/${studentId}`).subscribe(() => {
-    //   this.loadStudents(); // Reload the students after deletion
-    // });
+  constructor(private http: HttpClient, private snackBar: MatSnackBar) {}
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.http.delete(`http://localhost:8080/students/${studentId}`).subscribe({
-          next: () => {
-            console.log(`Student with ID ${studentId} deleted`);
-            this.students = this.students.filter(student => student.studentId !== studentId);
-          },
-          error: (err) => {
-            console.error('Error deleting student:', err);
-          }
-        });
+  // Method to fetch all students
+  fetchAllStudents() {
+    this.http.get('http://localhost:8080/students').subscribe({
+      next: (response) => {
+        console.log('Fetched all students:', response);
+      },
+      error: (err) => {
+        console.error('Error fetching all students:', err);
       }
     });
   }
 
+  // Method to delete all students
   deleteAllStudents() {
-    // Call the API to delete all students
-    this.http.delete('http://localhost:8080/api/students').subscribe(() => {
-      this.loadStudents(); // Reload the students after deletion
+    this.http.delete('http://localhost:8080/students').subscribe({
+      next: () => {
+        console.log('All students deleted successfully.');
+      },
+      error: (err) => {
+        console.error('Error deleting all students:', err);
+      }
     });
   }
 
-  onEditStudent(studentId: number) {
-    this.router.navigate([`/edit-student/${studentId}`]);
-  }
-  
+  // Method to create a new student
+  createNewStudent() {
+    const newStudent = {
+      firstName: 'John',
+      lastName: 'Doe',
+      studentClass: '10-A',
+      score: 90,
+      status: 1,
+      dob: '2005-05-15',
+      photoPath: 'default.jpg'
+    };
 
-  updateStudent(studentId: number) {
-    // Logic for updating student
-    console.log(`Updating student with ID: ${studentId}`);
+    this.http.post('http://localhost:8080/students', newStudent).subscribe({
+      next: (response) => {
+        console.log('New student created:', response);
+      },
+      error: (err) => {
+        console.error('Error creating new student:', err);
+      }
+    });
   }
 
-  viewStudent(studentId: number) {
-    // Logic for viewing student details
-    console.log(`Viewing student with ID: ${studentId}`);
+  // Method to fetch a student by ID
+  generateStudents() {
+    const userString = localStorage.getItem('user');
+    const user = userString ? JSON.parse(userString) : null;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${user?.token}`
+    });
+    if (this.count !== null && this.count >= 0) {
+      this.http.post(`http://localhost:8080/students/generate?count=${this.count}`, null, {headers}).subscribe({
+        next: (response: any) => {
+          console.log('Students generated successfully:', response);
+          this.showToast(response.message || 'Students generated successfully!');
+          // console.log(`Student with ID ${this.studentId}:`, response);
+        },
+        error: (err) => {
+          this.showToast('Students not generated!', true);
+          // console.error(`Error fetching student with ID ${this.studentId}:`, err);
+        }
+      });
+    } else {
+      console.error('Please enter a valid student ID.');
+    }
+  }
+
+  saveToDatabase() {
+    const userString = localStorage.getItem('user');
+    const user = userString ? JSON.parse(userString) : null;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${user?.token}`
+    });
+      this.http.post(`http://localhost:8080/students/db/save`, null, {headers}).subscribe({
+        next: (response: any) => {
+          console.log('Students saved to Database successfully:', response);
+          this.showToast(response.message || 'Students generated successfully!');
+          // console.log(`Student with ID ${this.studentId}:`, response);
+        },
+        error: (err) => {
+          this.showToast('Students not generated!', true);
+          // console.error(`Error fetching student with ID ${this.studentId}:`, err);
+        }
+      });
+    
+  }
+
+  saveToCSV() {
+    const userString = localStorage.getItem('user');
+    const user = userString ? JSON.parse(userString) : null;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${user?.token}`
+    });
+      this.http.post(`http://localhost:8080/students/csv/save`, null, {headers}).subscribe({
+        next: (response: any) => {
+          console.log('Students saved to csv successfully:', response);
+          this.showToast(response.message || 'Students generated successfully!');
+          // console.log(`Student with ID ${this.studentId}:`, response);
+        },
+        error: (err) => {
+          this.showToast('Students not generated!', true);
+          // console.error(`Error fetching student with ID ${this.studentId}:`, err);
+        }
+      });
+  }
+
+  showToast(message: string, isError: boolean = false) {
+    this.snackBar.open(message, 'Close', {
+      duration: 3000, // Duration in milliseconds
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+      panelClass: isError ? ['snackbar-error'] : ['snackbar-success']
+    });
   }
 }
