@@ -29,6 +29,13 @@ export class StudentsComponent implements OnInit {
     'Authorization': `Bearer ${this.user.token}` // Pass the token in the Authorization header
   });
 
+  paginatedStudents: Student[] = [];
+  currentPage: number = 1;
+  pageSize: number = 10;
+  totalPages: number = 0;
+
+  
+
   constructor(private http: HttpClient,
     private router: Router,
     private dialog: MatDialog) {}
@@ -56,6 +63,8 @@ export class StudentsComponent implements OnInit {
         next: (response: Student[]) => {
           console.log('Students fetched successfully', response);
           this.students = response;
+          this.totalPages = Math.ceil(this.students.length / this.pageSize);
+          this.updatePagination();
         },
         error: (err) => {
           console.error('Error fetching students', err);
@@ -109,5 +118,26 @@ export class StudentsComponent implements OnInit {
   viewStudent(studentId: number) {
     // Logic for viewing student details
     console.log(`Viewing student with ID: ${studentId}`);
+    this.router.navigate([`/student/${studentId}`]);
+  }
+
+  updatePagination() {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.paginatedStudents = this.students.slice(startIndex, endIndex);
+  }
+
+  prevPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.updatePagination();
+    }
+  }
+
+  nextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.updatePagination();
+    }
   }
 }
