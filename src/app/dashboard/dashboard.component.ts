@@ -1,19 +1,24 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { CommonModule } from '@angular/common';
+import { Student } from '../interfaces/student';
 
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [FormsModule, HttpClientModule],
+  imports: [FormsModule, HttpClientModule, CommonModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
   studentId: number | null = null;
   count: number | null = null;
+  totalStudents: number | null = null;
+  toastMessage: string = ''; 
+  isError: boolean = false;
 
     userString = localStorage.getItem('user');
     user = this.userString ? JSON.parse(this.userString) : null;
@@ -24,17 +29,44 @@ export class DashboardComponent {
 
   constructor(private http: HttpClient, private snackBar: MatSnackBar) {}
 
-  // Method to fetch all students
-  fetchAllStudents() {
-    this.http.get('http://localhost:8080/students').subscribe({
-      next: (response) => {
-        console.log('Fetched all students:', response);
-      },
-      error: (err) => {
-        console.error('Error fetching all students:', err);
-      }
-    });
+  showToast(message: string, error: boolean = false) {
+    this.toastMessage = message;
+    this.isError = error;
+
+    // Auto-hide the toast after 3 seconds
+    setTimeout(() => {
+      this.toastMessage = '';
+    }, 3000);
   }
+
+  // Method to fetch all students
+  ngOnInit() {
+    this.loadStudents(); // Fetch students on component initialization
+  }
+
+
+
+  loadStudents() {
+    if (typeof window !== 'undefined' && window.localStorage) {
+    const userString = localStorage.getItem('user');
+    const user = userString ? JSON.parse(userString) : null;
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${user.token}` // Pass the token in the Authorization header
+    });
+    this.http.get<Student[]>('http://localhost:8080/students/sql', { headers }) // Your API endpoint here
+      .subscribe({
+        next: (response: Student[]) => {
+          console.log('Students fetched successfully', response);
+          this.totalStudents = response.length;
+        },
+        error: (err) => {
+          console.error('Error fetching students', err);
+        }
+      });
+  }
+}
 
   // Method to delete all students
   deleteAllStudents() {
@@ -82,7 +114,8 @@ export class DashboardComponent {
       this.http.post(`http://localhost:8080/students/generate?count=${this.count}`, null, {headers}).subscribe({
         next: (response: any) => {
           console.log('Students generated successfully:', response);
-          this.showToast(response.message || 'Students generated successfully!');
+          this.showToast('Document with ' + this.count + ' students generated successfully!');
+
           // console.log(`Student with ID ${this.studentId}:`, response);
         },
         error: (err) => {
@@ -91,7 +124,7 @@ export class DashboardComponent {
         }
       });
     } else {
-      console.error('Please enter a valid student ID.');
+      console.error('Please enter a valid count.');
     }
   }
 
@@ -105,7 +138,7 @@ export class DashboardComponent {
       this.http.post(`http://localhost:8080/students/db/save`, null, {headers}).subscribe({
         next: (response: any) => {
           console.log('Students saved to Database successfully:', response);
-          this.showToast(response.message || 'Students generated successfully!');
+          this.showToast('Students saved to Database successfully!');
           // console.log(`Student with ID ${this.studentId}:`, response);
         },
         error: (err) => {
@@ -126,7 +159,7 @@ export class DashboardComponent {
       this.http.post(`http://localhost:8080/students/csv/save`, null, {headers}).subscribe({
         next: (response: any) => {
           console.log('Students saved to csv successfully:', response);
-          this.showToast(response.message || 'Students generated successfully!');
+          this.showToast('Students saved to csv successfully!');
           // console.log(`Student with ID ${this.studentId}:`, response);
         },
         error: (err) => {
@@ -136,12 +169,12 @@ export class DashboardComponent {
       });
   }
 
-  showToast(message: string, isError: boolean = false) {
-    this.snackBar.open(message, 'Close', {
-      duration: 3000, // Duration in milliseconds
-      horizontalPosition: 'center',
-      verticalPosition: 'top',
-      panelClass: isError ? ['snackbar-error'] : ['snackbar-success']
-    });
-  }
+  // showToast(message: string, isError: boolean = false) {
+  //   this.snackBar.open(message, 'Close', {
+  //     duration: 3000, // Duration in milliseconds
+  //     horizontalPosition: 'center',
+  //     verticalPosition: 'top',
+  //     panelClass: isError ? ['snackbar-error'] : ['snackbar-success']
+  //   });
+  // }
 }

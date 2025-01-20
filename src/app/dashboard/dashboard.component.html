@@ -1,40 +1,39 @@
-<div class="dashboard-container">
-  <h1>Student Dashboard</h1>
+<div class="p-4 space-y-6">
 
-  <button (click)="deleteAllStudents()">Delete All Students</button>
+  <div *ngIf="toastMessage" [ngClass]="{'bg-green-500': !isError, 'bg-red-500': isError}"
+    class="fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 text-white font-semibold rounded-md shadow-lg z-50 transition duration-300">
+    <span>{{ toastMessage }}</span>
+  </div>
+  <!-- Input container for number of students to generate -->
+  <!-- <div class="space-y-2">
+    <label for="studentId" class="block font-semibold text-gray-700">Number of students to generate:</label>
+    <div class="flex items-center space-x-4">
+      <input type="number" id="studentId" [(ngModel)]="count" name="studentId"
+        class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        placeholder="Enter number" />
+      <button (click)="generateStudents()"
+        class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        Generate
+      </button>
+    </div>
+  </div> -->
 
-  <table>
-    <thead>
-      <tr>
-        <th>First Name</th>
-        <th>Last Name</th>
-        <th>Class</th>
-        <th>Score</th>
-        <th>Status</th>
-        <th>Date of Birth</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let student of students">
-        <td>
-          <img *ngIf="student.photoPath; else placeholder" [src]="student.photoPath" alt="student photo" />
-          <ng-template #placeholder>
-            <img src="https://via.placeholder.com/150" alt="student photo" />
-          </ng-template>
-        </td>
-        <td>{{ student.firstName }}</td>
-        <td>{{ student.lastName }}</td>
-        <td>{{ student.studentClass }}</td>
-        <td>{{ student.score }}</td>
-        <td>{{ student.status }}</td>
-        <td>{{ student.dob | date }}</td>
-        <td>
-          <button (click)="viewStudent(student.studentId)">View</button>
-          <button (click)="onEditStudent(student.studentId)">Edit</button>
-          <button (click)="deleteStudent(student.studentId)">Delete</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <!-- Button container for Save options -->
+  <!-- <div class="space-x-4">
+    <button (click)="saveToCSV()"
+      class="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500">
+      Save To CSV
+    </button>
+    <button (click)="saveToDatabase()"
+      class="px-6 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500">
+      Save To Database
+    </button>
+  </div> -->
+  <div class="p-4 max-w-sm mx-auto">
+    <div class="bg-white shadow-lg rounded-lg p-6 text-center">
+      <h2 class="text-xl font-semibold text-gray-800">Total Students</h2>
+      <p class="text-4xl font-bold text-blue-500 mt-2">{{ totalStudents }}</p>
+    </div>
+  </div>
+  
 </div>
