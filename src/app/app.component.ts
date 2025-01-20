@@ -1,10 +1,19 @@
 import { Component } from '@angular/core';
-import { RouterOutlet, RouterModule } from '@angular/router';
+import { RouterOutlet, RouterModule, Router } from '@angular/router';
+import { AuthService } from './auth.service';
+import { CommonModule } from '@angular/common';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatListModule } from '@angular/material/list';
+// import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterModule],
+  imports: [RouterModule, CommonModule,
+    MatSidenavModule,
+    MatToolbarModule,
+    MatListModule],
   templateUrl: './app.component.html',
 //   template: `
 //   <main>
@@ -27,4 +36,14 @@ import { RouterOutlet, RouterModule } from '@angular/router';
 })
 export class AppComponent {
   title = 'student_management_frontend';
+  isAuthenticated = false;
+  constructor(private authService: AuthService, private router: Router) {
+    this.isAuthenticated = this.authService.validateToken();
+  }
+
+  logout() {
+    localStorage.removeItem('accessToken');
+    this.isAuthenticated = false;
+    this.router.navigate(['/login']);
+  }
 }

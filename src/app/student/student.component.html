@@ -1,0 +1,49 @@
+<div class="p-6 bg-white shadow-lg rounded-lg">
+
+  <h1 class="text-2xl font-bold mb-6 text-gray-800">Student Details</h1>
+
+  <div *ngIf="student">
+    <div class="mb-6">
+      <h2 class="text-xl font-semibold text-gray-700">First Name:</h2>
+      <p class="text-gray-600">{{ student.firstName }}</p>
+    </div>
+
+    <div class="mb-6">
+      <h2 class="text-xl font-semibold text-gray-700">Last Name:</h2>
+      <p class="text-gray-600">{{ student.lastName }}</p>
+    </div>
+
+    <div class="mb-6">
+      <h2 class="text-xl font-semibold text-gray-700">Class:</h2>
+      <p class="text-gray-600">{{ student.studentClass }}</p>
+    </div>
+
+    <div class="mb-6">
+      <h2 class="text-xl font-semibold text-gray-700">Score:</h2>
+      <p class="text-gray-600">{{ student.score }}</p>
+    </div>
+
+    <div class="mb-6">
+      <h2 class="text-xl font-semibold text-gray-700">Status:</h2>
+      <p class="text-gray-600">{{ student.status }}</p>
+    </div>
+
+    <div class="mb-6">
+      <h2 class="text-xl font-semibold text-gray-700">Date of Birth:</h2>
+      <p class="text-gray-600">{{ student.dob }}</p>
+    </div>
+
+    <div class="mb-6">
+      <h2 class="text-xl font-semibold text-gray-700">Photo:</h2>
+      <img *ngIf="student.photoPath" [src]="student.photoPath" alt="Student Photo" class="w-32 h-32 object-cover rounded-lg" />
+      <img *ngIf="!student.photoPath" src="https://via.placeholder.com/150" alt="Placeholder Photo" class="w-32 h-32 object-cover rounded-lg" />
+    </div>
+  </div>
+
+  <button 
+    (click)="goBack()" 
+    class="mt-4 px-6 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500">
+    Go Back
+  </button>
+
+</div>

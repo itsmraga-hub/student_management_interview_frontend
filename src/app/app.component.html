@@ -1,7 +1,50 @@
-<router-outlet></router-outlet>
-<nav>
-  <a class="button" routerLink="/login" routerLinkActive="activebutton"
-  ariaCurrentWhenActive="page">Login</a> |
-  <a class="button" routerLink="/register" routerLinkActive="activebutton"
-  ariaCurrentWhenActive="page">Register</a>
-</nav>
+<!-- Check if the user is authenticated -->
+<div *ngIf="isAuthenticated; else loginPage">
+  <div class="flex h-screen">
+    <!-- Side Navigation -->
+    <div class="w-64 bg-gray-800 text-white p-4">
+      <div class="mb-8 text-xl font-semibold">
+        Menu
+      </div>
+      <ul class="space-y-4">
+        <li><a class="block p-2 rounded hover:bg-gray-700" routerLink="/dashboard" routerLinkActive="active">Dashboard</a></li>
+        <li><a class="block p-2 rounded hover:bg-gray-700" routerLink="/generate" routerLinkActive="active">Generate</a></li>
+        <li><a class="block p-2 rounded hover:bg-gray-700" routerLink="/processing" routerLinkActive="active">Processing</a></li>
+        <li><a class="block p-2 rounded hover:bg-gray-700" routerLink="/students" routerLinkActive="active">Students management</a></li>
+        <li><a class="block p-2 rounded hover:bg-gray-700" routerLink="/report" routerLinkActive="active">Student Report</a></li>
+        <li><a class="block p-2 rounded hover:bg-gray-700 cursor-pointer" (click)="logout()">Logout</a></li>
+      </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 bg-gray-100 p-4">
+      <div class="bg-blue-500 text-white p-4 mb-6 rounded-md">
+        <h1 class="text-xl font-semibold">My Application</h1>
+      </div>
+      <div class="main-content">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Login Page Template (If Not Authenticated) -->
+<ng-template #loginPage>
+  <div class="flex justify-center items-center h-screen bg-gray-100">
+    <div>
+      <router-outlet></router-outlet>
+      <nav class="text-center space-x-4">
+        <a class="text-blue-500 hover:text-blue-700" routerLink="/login" routerLinkActive="activebutton" ariaCurrentWhenActive="page">Login</a> |
+        <a class="text-blue-500 hover:text-blue-700" routerLink="/register" routerLinkActive="activebutton" ariaCurrentWhenActive="page">Register</a>
+      </nav>
+    </div>
+  </div>
+</ng-template>
+
+<!-- If Not Authenticated -->
+<!-- <div *ngIf="!isAuthenticated;">
+  <nav class="text-center space-x-4 mt-6">
+    <a class="text-blue-500 hover:text-blue-700" routerLink="/login" routerLinkActive="activebutton" ariaCurrentWhenActive="page">Login</a> |
+    <a class="text-blue-500 hover:text-blue-700" routerLink="/register" routerLinkActive="activebutton" ariaCurrentWhenActive="page">Register</a>
+  </nav>
+</div> -->
