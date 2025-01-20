@@ -7,6 +7,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { FormsModule } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 
@@ -21,7 +22,7 @@ export class LoginComponent {
   email: string = '';
   password: string = '';
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router, private snackBar: MatSnackBar) {}
 
   onLogin() {
     const loginData = {
@@ -38,16 +39,30 @@ export class LoginComponent {
         next: (response: any) => {
           console.log('Login successful', response);
           const storedResponse = response;
+          this.showToast('Login successful', false);
           localStorage.setItem('user', JSON.stringify(storedResponse));
+          localStorage.setItem('accessToken', JSON.stringify(storedResponse.token));
+
           // Use the storedResponse as needed
           console.log('Stored response:', storedResponse);
           // Navigate to another page on success, e.g., a dashboard
           this.router.navigate(['/dashboard']);
         },
         error: (error: any) => {
+          this.showToast('Login failed', true);
           console.error('Login failed', error);
-          alert('Invalid email or password!');
         }
       });
   }
+
+  showToast(message: string, isError: boolean = false) {
+    this.snackBar.open(message, 'Close', {
+      duration: 3000, // Duration in milliseconds
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+      panelClass: isError ? ['snackbar-error'] : ['snackbar-success']
+    });
+  }
+
+
 }
