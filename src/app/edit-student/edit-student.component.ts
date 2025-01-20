@@ -73,12 +73,13 @@ export class EditStudentComponent implements OnInit {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${user?.token}`
     });
+    console.log('Student:', this.student);
     this.student.dob = new Date(this.student.dob).toISOString();
     this.http.put<Student>(`http://localhost:8080/students/update/${this.student.studentId}`, this.student, { headers })
       .subscribe({
         next: (response) => {
           console.log('Student updated successfully', response);
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/students']);
         },
         error: (error) => {
           console.error('Error updating student:', error);
