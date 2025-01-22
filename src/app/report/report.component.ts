@@ -23,6 +23,7 @@ import * as XLSX from 'xlsx';
 })
 export class ReportComponent {
     students: Student[] = [];
+    filteredData: Student[] = [];
     userString = localStorage.getItem('user');
     user = this.userString ? JSON.parse(this.userString) : null;
     headers = new HttpHeaders({
@@ -183,11 +184,12 @@ export class ReportComponent {
   
       // Paginate the filtered results
       this.totalPages = Math.ceil(filteredStudents.length / 10);
+      this.filteredData = filteredStudents;
       this.paginatedStudents = filteredStudents.slice((this.currentPage - 1) * 10, this.currentPage * 10);
     }
   
     exportToExcel(): void {
-      const filteredData = this.paginatedStudents.map(student => ({
+      const filteredData = this.filteredData.map(student => ({
         'StudentId': student.studentId,
         'First Name': student.firstName,
         'Last Name': student.lastName,
