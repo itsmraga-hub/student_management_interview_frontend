@@ -13,7 +13,8 @@ import { CommonModule } from '@angular/common';
 })
 export class StudentComponent implements OnInit {
   goBack() {
-    throw new Error('Method not implemented.');
+    this.router.navigate(['/students']);
+    // throw new Error('Method not implemented.');
   }
   student: any = {};
 

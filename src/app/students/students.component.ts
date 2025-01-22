@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ChangeDetectorRef } from '@angular/core';
 import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
 import { Student } from '../interfaces/student'; // Import the model
 import { CommonModule } from '@angular/common';
@@ -31,7 +31,7 @@ export class StudentsComponent implements OnInit {
 
   paginatedStudents: Student[] = [];
   currentPage: number = 1;
-  pageSize: number = 10;
+  pageSize: number = 5;
   totalPages: number = 0;
   searchStudentId: string = '';
   selectedClass: string = '';
@@ -43,7 +43,9 @@ export class StudentsComponent implements OnInit {
 
   constructor(private http: HttpClient,
     private router: Router,
-    private dialog: MatDialog) {}
+    private dialog: MatDialog,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
     this.loadStudents(); // Fetch students on component initialization
@@ -91,19 +93,15 @@ export class StudentsComponent implements OnInit {
 
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${user.token}` // Pass the token in the Authorization header
+      'Authorization': `Bearer ${user.token}`
     });
-    // Call the API to delete the student
-    // this.http.delete(`http://localhost:8080/api/students/${studentId}`).subscribe(() => {
-    //   this.loadStudents(); // Reload the students after deletion
-    // });
-
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.http.delete(`http://localhost:8080/students/${studentId}`, {headers}).subscribe({
           next: () => {
-            console.log(`Student with ID ${studentId} deleted`);
             this.students = this.students.filter(student => student.studentId !== studentId);
+            this.paginatedStudents = this.students;
+            this.cdr.detectChanges();
           },
           error: (err) => {
             console.error('Error deleting student:', err);
@@ -113,10 +111,13 @@ export class StudentsComponent implements OnInit {
     });
   }
 
+  trackByStudentId(index: number, student: any): number {
+    return student.studentId;
+  }
+  
   deleteAllStudents() {
-    // Call the API to delete all students
     this.http.delete('http://localhost:8080/api/students').subscribe(() => {
-      this.loadStudents(); // Reload the students after deletion
+      this.loadStudents();
     });
   }
 

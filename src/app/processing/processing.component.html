@@ -1,14 +1,30 @@
 <div class="space-x-4">
+<div class="">
+  <div class="flex items-center space-x-4 mb-4">
+    <span *ngIf="csvSaving" class="animate-spin mr-2 bg-blue-500 p-2 rounded-full">
+      <svg class="w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a8 8 0 1116 0 8 8 0 01-16 0z"></path>
+      </svg>
+    </span>
+  </div>
   <button (click)="saveToCSV()"
+  *ngIf="!csvSaving"
     class="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500">
     Save To CSV
   </button>
+</div>
+<div class="flex items-center space-x-4 mb-4">
+  <div class="flex items-center space-x-4 mb-4">
+    <span *ngIf="savingDatabase" class="animate-spin mr-2 bg-blue-500 p-2 rounded-full">
+      <svg class="w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a8 8 0 1116 0 8 8 0 01-16 0z"></path>
+      </svg>
+    </span>
+  </div>
   <button (click)="saveToDatabase()"
+  *ngIf="!savingDatabase"
     class="px-6 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500">
     Save To Database
   </button>
 </div>
-
-<div *ngIf="toastMessage" [ngClass]="{'bg-green-500': !isError, 'bg-red-500': isError}"
-class="fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 text-white font-semibold rounded-md shadow-lg z-50 transition duration-300">
-<span>{{ toastMessage }}</span>
+</div>

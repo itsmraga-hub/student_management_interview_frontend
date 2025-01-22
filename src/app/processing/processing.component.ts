@@ -15,6 +15,8 @@ export class ProcessingComponent {
     count: number | null = null;
     toastMessage: string = '';
     isError: boolean = false;
+    csvSaving: boolean = false;
+    savingDatabase: boolean = false;
   
     userString = localStorage.getItem('user');
     user = this.userString ? JSON.parse(this.userString) : null;
@@ -38,6 +40,7 @@ export class ProcessingComponent {
 
 
     saveToDatabase() {
+      this.savingDatabase = true;
       const userString = localStorage.getItem('user');
       const user = userString ? JSON.parse(userString) : null;
       const headers = new HttpHeaders({
@@ -51,15 +54,19 @@ export class ProcessingComponent {
             // console.log(`Student with ID ${this.studentId}:`, response);
           },
           error: (err) => {
-            // this.showToast('Students not generated!', true);
-            this.showToast('Students saved to Database successfully!');
+            this.showToast('Students not saved!', true);
+            // this.showToast('Students saved to Database successfully!');
             // console.error(`Error fetching student with ID ${this.studentId}:`, err);
+          },
+          complete: () => {
+            this.savingDatabase = false; // Stop the spinner after the request completes
           }
         });
-      
+      // this.savingDatabase = false;
     }
   
     saveToCSV() {
+      this.csvSaving = true;
       const userString = localStorage.getItem('user');
       const user = userString ? JSON.parse(userString) : null;
       const headers = new HttpHeaders({
@@ -75,6 +82,9 @@ export class ProcessingComponent {
           error: (err) => {
             this.showToast('Students not generated!', true);
             // console.error(`Error fetching student with ID ${this.studentId}:`, err);
+          },
+          complete: () => {
+            this.csvSaving = false; // Stop the spinner after the request completes
           }
         });
     }

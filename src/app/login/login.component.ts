@@ -46,7 +46,9 @@ export class LoginComponent {
           // Use the storedResponse as needed
           console.log('Stored response:', storedResponse);
           // Navigate to another page on success, e.g., a dashboard
+          
           this.router.navigate(['/dashboard']);
+          // this.refreshRoute();
         },
         error: (error: any) => {
           this.showToast('Login failed', true);
@@ -54,6 +56,7 @@ export class LoginComponent {
         }
       });
   }
+  
 
   showToast(message: string, isError: boolean = false) {
     this.snackBar.open(message, 'Close', {
@@ -64,5 +67,12 @@ export class LoginComponent {
     });
   }
 
+
+  // refreshRoute() {
+  //   const currentUrl = this.router.url;
+  //   this.router.navigateByUrl('/dashboard', { skipLocationChange: true }).then(() => {
+  //     this.router.navigateByUrl(currentUrl);
+  //   });
+  // }
 
 }
