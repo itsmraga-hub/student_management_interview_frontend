@@ -7,6 +7,17 @@ export interface Student {
   status: number;
   photoPath: string;
   dob: string;
+  editingStatus: number;
+  makerUserId: string;
+  checkerUserId: string;
+  checkerComments: string;
+  isApproved: boolean;
+  draftFirstName: string;
+  draftLastName: string;
+  draftStudentClass: string;
+  draftScore: number;
+  draftPhotoPath: string;
+  draftDOB: string;
 }
 
 export interface SelectedStudent {
