@@ -20,7 +20,19 @@
         (ngModelChange)="applyFilters()"
       />
     </div>
-  
+    <div class="flex flex-col w-1/4">
+      <label for="statusFilter" class="block font-semibold text-gray-700">Filter by Status:</label>
+      <select
+        id="statusFilter"
+        [(ngModel)]="selectedStatus"
+        class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+        (change)="applyFilters()"
+      >
+        <option value="0">All Records</option>
+        <option value="1">Records Pending Approval</option>
+        <option value="2">Rejected Records</option>
+      </select>
+    </div>
     <!-- Filter by Class -->
     <div class="flex flex-col w-1/4">
       <label for="studentClass" class="block font-semibold text-gray-700">Filter by Class:</label>

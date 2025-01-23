@@ -5,112 +5,97 @@
   <form (ngSubmit)="onSubmit()">
     <div class="mb-6">
       <label for="firstName" class="block text-sm font-medium text-gray-700">First Name:</label>
-      <input 
-        type="text" 
-        id="firstName" 
-        [(ngModel)]="student.firstName" 
-        name="firstName" 
-        required
-        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
+      <input type="text" id="firstName" [(ngModel)]="draftStudent.draftFirstName" name="firstName" required
+        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
     </div>
 
     <div class="mb-6">
       <label for="lastName" class="block text-sm font-medium text-gray-700">Last Name:</label>
-      <input 
-        type="text" 
-        id="lastName" 
-        [(ngModel)]="student.lastName" 
-        name="lastName" 
-        required
-        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
+      <input type="text" id="lastName" [(ngModel)]="draftStudent.draftLastName" name="lastName" required
+        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
     </div>
 
     <div class="mb-6">
       <label for="studentClass" class="block text-sm font-medium text-gray-700">Class:</label>
-      <input 
-        type="text" 
-        id="studentClass" 
-        [(ngModel)]="student.studentClass" 
-        name="studentClass" 
-        required
-        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
+      <input type="text" id="studentClass" [(ngModel)]="draftStudent.draftStudentClass" name="studentClass" required
+        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
     </div>
 
     <div class="mb-6">
       <label for="score" class="block text-sm font-medium text-gray-700">Score:</label>
-      <input 
-        type="number" 
-        id="score" 
-        [(ngModel)]="student.score" 
-        name="score" 
-        required
-        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
+      <input type="number" id="score" [(ngModel)]="draftStudent.draftScore" name="score" required
+        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
     </div>
-
-    <!-- Optional status field -->
-    <!-- 
-    <div class="mb-6">
-      <label for="status" class="block text-sm font-medium text-gray-700">Status:</label>
-      <select 
-        id="status" 
-        [(ngModel)]="student.status" 
-        name="status" 
-        required
-        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-      >
-        <option value="0">Inactive</option>
-        <option value="1">Active</option>
-      </select>
-    </div>
-    -->
-
     <div class="mb-6">
       <label for="dob" class="block text-sm font-medium text-gray-700">Date of Birth:</label>
-      <input 
-        type="date" 
-        id="dob" 
-        [(ngModel)]="student.dob" 
-        name="dob" 
-        required
-        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
+      <input type="date" id="dob" [(ngModel)]="draftStudent.draftDOB" name="dob" required
+        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
     </div>
-
-    <!-- Optional photo path field -->
-    <!-- 
     <div class="mb-6">
-      <label for="photoPath" class="block text-sm font-medium text-gray-700">Photo Path:</label>
-      <input 
-        type="text" 
-        id="photoPath" 
-        [(ngModel)]="student.photoPath" 
-        name="photoPath" 
-        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-    </div>
-    -->
-
-    <div class="mb-6">
+      <img *ngIf="draftStudent.photoPath.length > 30; else placeholder" width="50px"  [src]="draftStudent.photoPath" alt="student photo" />
+      <ng-template #placeholder>
+        <img src="avatar.jpg" width="50px" alt="student photo" />
+      </ng-template>
       <label for="photoPath" class="block text-sm font-medium text-gray-700">Photo:</label>
-      <input 
-        type="file" 
-        id="photoPath" 
-        (change)="onFileSelected($event)" 
-        class="mt-1 block w-full text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
+      <input type="file" id="photoPath" (change)="onFileSelected($event)"
+        class="mt-1 block w-full text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
     </div>
 
-    <div class="mt-4">
-      <button 
-        type="submit" 
-        class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      >
+    <div class="mt-4" *ngIf="(student.editingStatus === null || student.editingStatus === 0)">
+      <button type="submit"
+        class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
         Update Student
       </button>
     </div>
+    <div class="mt-4" *ngIf="(student.editingStatus === 2 && student.makerUserId === userId)">
+      <button type="submit"
+        class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        Update Student
+      </button>
+    </div>
+    <!-- <div class="mt-4" *ngIf="(student.editingStatus === null || student.editingStatus === 0 || student.editingStatus === 2) && student.makerUserId === userId">
+      <button type="submit"
+        class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        Update Student
+      </button>
+    </div> -->
+    <div class="mt-4" *ngIf="(student.editingStatus === 0 || student.editingStatus === 2) && student.makerUserId !== userId">
+      <button type="submit"
+        disabled="true"
+        class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        Awaiting requested changes
+      </button>
+    </div>
   </form>
+
+  <div>
+    <div *ngIf="toastMessage" [ngClass]="{'bg-green-500': !isError, 'bg-red-500': isError}"
+      class="fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 text-white font-semibold rounded-md shadow-lg z-50 transition duration-300">
+      <span>{{ toastMessage }}</span>
+    </div>
+    <div class="flex space-x-4" *ngIf="student.editingStatus === 1">
+      <div class="flex items-center space-x-4 mb-4">
+        <button (click)="approveUser()"
+          class="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500">
+          Approve
+        </button>
+      </div>
+      <div class="flex items-center space-x-4 mb-4">
+        <button (click)="rejectUser()"
+          class="px-6 py-2 bg-red-500 text-white rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500">
+          Reject
+        </button>
+      </div>
+    </div>
+    <div class="mb-6" *ngIf="student.editingStatus === 1">
+      <label for="comments" class="block text-sm font-medium text-gray-700">Leave comments</label>
+      <textarea type="text" id="comments" [(ngModel)]="comments" name="comments" required
+        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+    </div>
+    <div class="mb-6" *ngIf="student.editingStatus === 2">
+      <label for="comments" class="block text-sm font-medium text-gray-700">Admin comments</label>
+      <textarea type="text" id="comments" disabled="true" [(ngModel)]="comments" name="comments" required
+        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+    </div>
+  </div>
 </div>

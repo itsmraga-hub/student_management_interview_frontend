@@ -48,6 +48,7 @@ export class StudentsComponent implements OnInit {
   startDate: string = '';
   endDate: string = '';
   fileName: string = '';
+  selectedStatus: number = 0;
   
   classes: string[] = ['Class 1', 'Class 2', 'Class 3', 'Class 4', 'Class 5']; 
 
@@ -97,9 +98,9 @@ export class StudentsComponent implements OnInit {
 
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${user.token}` // Pass the token in the Authorization header
+      'Authorization': `Bearer ${user.token}`
     });
-    this.http.get<Student[]>('http://localhost:8080/students/sql', { headers }) // Your API endpoint here
+    this.http.get<Student[]>('http://localhost:8080/students/sql', { headers })
       .subscribe({
         next: (response: Student[]) => {
           console.log('Students fetched successfully', response);
@@ -213,6 +214,14 @@ export class StudentsComponent implements OnInit {
       filteredStudents = filteredStudents.filter(student =>
         new Date(student.dob) >= new Date(this.startDate) && new Date(student.dob) <= new Date(this.endDate)
       );
+    }
+
+    if (this.selectedStatus) {
+      console.log('Selected Status:', this.selectedStatus);
+      filteredStudents = filteredStudents.filter(student => student.editingStatus === parseInt(this.selectedStatus.toString()));
+      if (parseInt(this.selectedStatus.toString()) === 0) {
+        filteredStudents = this.students;
+      }
     }
 
     // Paginate the filtered results
