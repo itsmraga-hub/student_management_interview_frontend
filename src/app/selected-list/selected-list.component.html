@@ -1,0 +1,39 @@
+<div class="p-4">
+  <h1>Selected Students</h1>
+  <div class="border border-gray-300">
+    <table class="min-w-full border-collapse">
+      <thead class="bg-gray-200 sticky top-0 z-10"> <!-- Sticky header -->
+        <tr>
+          <th class="border border-gray-300 px-4 py-2">Id</th>
+          <th class="border border-gray-300 px-4 py-2">Name</th>
+          <th class="border border-gray-300 px-4 py-2">Score</th>
+        </tr>
+      </thead>
+    </table>
+    <!-- Scrollable tbody -->
+    <div class="overflow-y-auto" style="height: 300px;">
+      <table class="min-w-full border-collapse">
+        <tbody>
+          <tr *ngFor="let student of selectedStudents" class="hover:bg-gray-100">
+            <td class="border border-gray-300 px-4 py-2">{{ student.studentId }}</td>
+            <td class="border border-gray-300 px-4 py-2">{{ student.name }}</td>
+            <td class="border border-gray-300 px-4 py-2">{{ student.score }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- Sticky footer -->
+    <table class="min-w-full border-collapse">
+      <tfoot class="bg-gray-100 sticky bottom-0 z-10"> 
+        <tr>
+          <td colspan="2" class="border border-gray-300 px-4 py-2 font-bold text-right">Total:</td>
+          <td class="border border-gray-300 px-4 py-2">{{ total }}</td>
+        </tr>
+        <!-- <tr>
+          <td colspan="2" class="border border-gray-300 px-4 py-2 font-bold text-right">Average:</td>
+          <td class="border border-gray-300 px-4 py-2">{{ average }}</td>
+        </tr> -->
+      </tfoot>
+    </table>
+  </div>
+</div>

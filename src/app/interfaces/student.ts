@@ -9,6 +9,12 @@ export interface Student {
   dob: string;
 }
 
+export interface SelectedStudent {
+  studentId: number,
+  name: string,
+  score: number
+}
+
 
 export interface PhotoPath {
   photoUrl: string;
