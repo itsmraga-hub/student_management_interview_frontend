@@ -32,15 +32,38 @@
         class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
     </div>
     <div class="mb-6">
+      <img *ngIf="draftStudent.photoPath.length > 30; else placeholder" width="50px"  [src]="draftStudent.photoPath" alt="student photo" />
+      <ng-template #placeholder>
+        <img src="avatar.jpg" width="50px" alt="student photo" />
+      </ng-template>
       <label for="photoPath" class="block text-sm font-medium text-gray-700">Photo:</label>
       <input type="file" id="photoPath" (change)="onFileSelected($event)"
         class="mt-1 block w-full text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
     </div>
 
-    <div class="mt-4" *ngIf="student.editingStatus === null || student.editingStatus === 0">
+    <div class="mt-4" *ngIf="(student.editingStatus === null || student.editingStatus === 0)">
       <button type="submit"
         class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
         Update Student
+      </button>
+    </div>
+    <div class="mt-4" *ngIf="(student.editingStatus === 2 && student.makerUserId === userId)">
+      <button type="submit"
+        class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        Update Student
+      </button>
+    </div>
+    <!-- <div class="mt-4" *ngIf="(student.editingStatus === null || student.editingStatus === 0 || student.editingStatus === 2) && student.makerUserId === userId">
+      <button type="submit"
+        class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        Update Student
+      </button>
+    </div> -->
+    <div class="mt-4" *ngIf="(student.editingStatus === 0 || student.editingStatus === 2) && student.makerUserId !== userId">
+      <button type="submit"
+        disabled="true"
+        class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        Awaiting requested changes
       </button>
     </div>
   </form>
@@ -64,9 +87,14 @@
         </button>
       </div>
     </div>
-    <div class="mb-6">
+    <div class="mb-6" *ngIf="student.editingStatus === 1">
       <label for="comments" class="block text-sm font-medium text-gray-700">Leave comments</label>
       <textarea type="text" id="comments" [(ngModel)]="comments" name="comments" required
+        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+    </div>
+    <div class="mb-6" *ngIf="student.editingStatus === 2">
+      <label for="comments" class="block text-sm font-medium text-gray-700">Admin comments</label>
+      <textarea type="text" id="comments" disabled="true" [(ngModel)]="comments" name="comments" required
         class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
     </div>
   </div>
