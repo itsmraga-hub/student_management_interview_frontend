@@ -3,6 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Observable } from 'rxjs';
+import { Student } from '../interfaces/student';
 
 @Component({
   selector: 'app-student',
@@ -14,9 +16,9 @@ import { CommonModule } from '@angular/common';
 export class StudentComponent implements OnInit {
   goBack() {
     this.router.navigate(['/students']);
-    // throw new Error('Method not implemented.');
   }
   student: any = {};
+
 
   constructor(private route: ActivatedRoute, private http: HttpClient, private router: Router) { }
 
@@ -30,20 +32,21 @@ export class StudentComponent implements OnInit {
 
         const headers = new HttpHeaders({
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${user.token}` // Pass the token in the Authorization header
+          'Authorization': `Bearer ${user.token}`
         });
-        // Fetch the student details using the ID
         this.http.get(`http://localhost:8080/students/sql/${studentId}`, {headers}).subscribe({
           next: (response: any) => {
-            this.student = response;  // Save the student data
+            this.student = response;
           },
           error: (err) => {
             console.error('Error fetching student details', err);
-            this.router.navigate(['/dashboard']);  // Redirect to dashboard on error
+            this.router.navigate(['/dashboard']);
           }
         });
 
       }
     }
   }
+
+  
 }
