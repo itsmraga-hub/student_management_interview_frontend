@@ -8,7 +8,7 @@
       <input 
         type="text" 
         id="firstName" 
-        [(ngModel)]="student.firstName" 
+        [(ngModel)]="draftStudent.draftFirstName" 
         name="firstName" 
         required
         class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -20,7 +20,7 @@
       <input 
         type="text" 
         id="lastName" 
-        [(ngModel)]="student.lastName" 
+        [(ngModel)]="draftStudent.draftLastName" 
         name="lastName" 
         required
         class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -32,7 +32,7 @@
       <input 
         type="text" 
         id="studentClass" 
-        [(ngModel)]="student.studentClass" 
+        [(ngModel)]="draftStudent.draftStudentClass" 
         name="studentClass" 
         required
         class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -44,7 +44,7 @@
       <input 
         type="number" 
         id="score" 
-        [(ngModel)]="student.score" 
+        [(ngModel)]="draftStudent.draftScore" 
         name="score" 
         required
         class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -73,7 +73,7 @@
       <input 
         type="date" 
         id="dob" 
-        [(ngModel)]="student.dob" 
+        [(ngModel)]="draftStudent.draftDOB" 
         name="dob" 
         required
         class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
