@@ -126,6 +126,7 @@ export class EditStudentComponent implements OnInit {
               this.draftStudent.draftPhotoPath = this.student.photoPath;
               this.student.draftDOB = this.formatDate(this.student.draftDOB);
               this.draftStudent.checkerUserId = tokenInfo?.id;
+              this.comments = this.student.checkerComments;
             }
           },
           error: (error) => {
@@ -183,14 +184,25 @@ export class EditStudentComponent implements OnInit {
   }
 
   rejectUser() {
+    if (this.comments.length <= 1) {
+      this.showToast('Please provide comments', true);
+      return;
+    }
+
+    if (this.userId === this.student.makerUserId) {
+      this.showToast('Editor and Approver cannot be the same', true);
+      return;
+    }
     if (this.student.editingStatus === 1) {
-      this.rejectChanges(this.student.studentId, this.userId, this.comments).subscribe({
+      this.rejectChanges(this.student.studentId, this.userId).subscribe({
         next: (response) => {
           console.log('Student updated successfully', response);
+          this.showToast('Student changes rejected successfully');
           // this.router.navigate(['/students']);
         },
         error: (error) => {
           console.error('Error updating student:', error);
+          this.showToast('Error rejecting student changes', true);
         }
       });
     } else {
@@ -263,13 +275,13 @@ export class EditStudentComponent implements OnInit {
     return this.http.put<Student>(`${this.apiUrl}/approve?studentId=${studentId}&checkerUserId=${checkerUserId}`, null, { headers });
   }
 
-  rejectChanges(studentId: number, checkerUserId: number, comments: string): Observable<Student> {
+  rejectChanges(studentId: number, checkerUserId: number,): Observable<Student> {
     const userString = localStorage.getItem('user');
     const user = userString ? JSON.parse(userString) : null;
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${user?.token}`
     });
-    return this.http.put<Student>(`${this.apiUrl}/reject?studentId=${studentId}&checkerUserId=${checkerUserId}&comments=${comments}`, { headers });
+    return this.http.put<Student>(`${this.apiUrl}/reject?studentId=${studentId}&checkerUserId=${checkerUserId}`, this.comments, { headers });
   }
 
   resetDraft(studentId: number, makerUserId: number): Observable<Student> {
