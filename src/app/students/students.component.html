@@ -1,4 +1,12 @@
+
+
 <div class="p-4">
+  <div class="space-x-6">
+    <app-average></app-average>
+  </div>
+  <div class="space-x-6">
+    <app-selected-list></app-selected-list>
+  </div>
 
   <div class="flex space-x-6 mb-6">
     <div class="flex flex-col w-1/4">
@@ -82,6 +90,8 @@
           <button (click)="viewStudent(student.studentId)" class="text-blue-500">View</button>
           <button (click)="onEditStudent(student.studentId)" class="text-green-500 mx-2">Edit</button>
           <button (click)="deleteStudent(student.studentId)" class="text-red-500">Delete</button>
+          <button (click)="selectStudent(student.studentId, student.firstName + ' ' + student.lastName, student.score)" class="text-green-500">Select</button>
+          <!-- <button (click)="addStudent()" class="text-green-500">Select</button> -->
         </td>
       </tr>
     </tbody>

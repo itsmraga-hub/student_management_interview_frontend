@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, ChangeDetectorRef } from '@angular/core';
 import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
-import { Student } from '../interfaces/student'; // Import the model
+import { SelectedStudent, Student } from '../interfaces/student'; // Import the model
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -11,12 +11,15 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import * as XLSX from 'xlsx';
+import { SelectedStudentsService } from '../selected-students.service';
+import { SelectedListComponent } from "../selected-list/selected-list.component";
+import { AverageComponent } from "../average/average.component";
 
 @Component({
   selector: 'app-students',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, HttpClientModule, MatDialogModule,
-    MatButtonModule, FormsModule],
+    MatButtonModule, FormsModule, SelectedListComponent, AverageComponent],
   templateUrl: './students.component.html',
   styleUrls: ['./students.component.css']
 })
@@ -28,6 +31,13 @@ export class StudentsComponent implements OnInit {
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${this.user.token}`
   });
+
+  // selectedStudents = [
+  //   { studentId: 1, name: 'John Doe', score: 90 },
+  //   { studentId: 2, name: 'Jane Smith', score: 85 },
+  //   { studentId: 3, name: 'Sam Wilson', score: 88 },
+  // ];
+
 
   paginatedStudents: Student[] = [];
   currentPage: number = 1;
@@ -44,14 +54,38 @@ export class StudentsComponent implements OnInit {
   constructor(private http: HttpClient,
     private router: Router,
     private dialog: MatDialog,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private selectedStudentService: SelectedStudentsService
   ) {}
 
   ngOnInit() {
     this.loadStudents(); // Fetch students on component initialization
   }
 
+  // addStudent() {
+  //   console.log
+  //   const newStudent = { studentId: 4, name: 'New Student', score: 95 };
+  //   this.selectedStudentService.updateSelectedStudents([newStudent]); // Update students list
+  // }
 
+  selectStudent(studentId: number, studentName: string, score: number) {
+    const student: SelectedStudent = {
+      studentId,
+      name: studentName,
+      score
+    };
+    console.log(student)
+    this.selectedStudentService.updateSelectedStudents(student);
+    // this.selectedStudentService.addStudent(student);
+
+    // this.selectedStudents.push({
+    //   studentId: 1,
+    //   name: "William",
+    //   score: 10
+    // })
+
+    // console.log(this.selectedStudents)
+  }
 
   loadStudents() {
     if (typeof window !== 'undefined' && window.localStorage) {
