@@ -8,8 +8,8 @@ export interface Student {
   photoPath: string;
   dob: string;
   editingStatus: number;
-  makerUserId: string;
-  checkerUserId: string;
+  makerUserId: number;
+  checkerUserId: number;
   checkerComments: string;
   isApproved: boolean;
   draftFirstName: string;
