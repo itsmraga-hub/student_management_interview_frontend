@@ -48,6 +48,7 @@ export class StudentsComponent implements OnInit {
   startDate: string = '';
   endDate: string = '';
   fileName: string = '';
+  selectedStatus: number = 0;
   
   classes: string[] = ['Class 1', 'Class 2', 'Class 3', 'Class 4', 'Class 5']; 
 
@@ -213,6 +214,11 @@ export class StudentsComponent implements OnInit {
       filteredStudents = filteredStudents.filter(student =>
         new Date(student.dob) >= new Date(this.startDate) && new Date(student.dob) <= new Date(this.endDate)
       );
+    }
+
+    if (this.selectedStatus) {
+      console.log('Selected Status:', this.selectedStatus);
+      filteredStudents = filteredStudents.filter(student => student.editingStatus === parseInt(this.selectedStatus.toString()));
     }
 
     // Paginate the filtered results
